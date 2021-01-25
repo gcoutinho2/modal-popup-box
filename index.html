@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Newsletter Popup Box - Vanilla JS</title>
+    <link rel="stylesheet/scss" type="text/css" href="styles.scss" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/sass.js/0.6.3/sass.min.js"></script>
+    <script>
+      (async () => {
+        let buffer = '';
+
+        const fullCode = (
+          await Promise.all(
+            [...document.querySelectorAll('link')]
+              .filter((l) => l.rel === 'stylesheet/scss')
+              .map(async (l) => {
+                url = l.href;
+                return await (await fetch(url)).text();
+              })
+          )
+        ).join('\n');
+
+        const basename = 'tmp.scss';
+        Sass.writeFile(basename, fullCode);
+        const compiled = await Sass.compile(`@import "${basename}"; `);
+
+        document.head.innerHTML += `<style>${compiled}</style>`;
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="btn" onclick="popupToggle();"> Inscreva-se</a>
+    <div id="popup">
+      <div class="content">
+        <img src="email.png" />
+        <h2>Join Our Newsletter</h2>
+        <p>
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry. Lorem Ipsum has been the industry's.
+        </p>
+        <div class="input-box">
+          <input type="email" placeholder="Enter Email" />
+        </div>
+        <div class="input-box">
+          <input type="submit" value="Sign Up" class="btn" />
+        </div>
+      </div>
+      <a class="close" onclick="popupToggle();">
+        <img src="cancel.png" />
+      </a>
+    </div>
+    <script>
+      function popupToggle() {
+        const popup = document.getElementById('popup');
+        popup.classList.toggle('active');
+      }
+    </script>
+  </body>
+</html>
